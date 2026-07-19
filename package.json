@@ -1,0 +1,9 @@
+{
+  "name": "stadium-ai-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "install-frontend": "cd frontend && npm install",
+    "build": "cd frontend && npm install && npm run build"
+  }
+}
