@@ -18,7 +18,7 @@ def run_demo(steps: int = 4, interval: float = 1.0) -> List[Dict[str, Any]]:
 
     for i, occ in enumerate(surge_values, start=1):
         # apply occupancy updates to first three zones
-        for idx, zid in enumerate(["Z1", "Z2", "Z3"]):
+        for idx, zid in enumerate(["Atlanta Stadium", "Boston Stadium", "Dallas Stadium"]):
             zone = next((z for z in simulation.zones if z.id == zid), None)
             if zone:
                 # stagger occupancy
