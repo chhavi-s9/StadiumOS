@@ -1,4 +1,4 @@
-# StadiumAI — Local Run
+# StadiumOS — Local Run
 
 This workspace contains a FastAPI backend and a Vite React frontend.
 
