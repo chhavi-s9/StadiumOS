@@ -1,0 +1,91 @@
+"""
+=========================================================
+websocket.py
+
+WebSocket endpoints for StadiumOS AI.
+
+Responsibilities
+----------------
+- Live stadium updates
+- Real-time simulation streaming
+
+=========================================================
+"""
+
+from __future__ import annotations
+
+import asyncio
+
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+
+from app.config import settings
+from app.simulation import simulation
+
+router = APIRouter()
+
+
+class ConnectionManager:
+    """
+    Manages active WebSocket connections.
+    """
+
+    def __init__(self):
+
+        self.active_connections: list[WebSocket] = []
+
+    async def connect(self, websocket: WebSocket):
+
+        await websocket.accept()
+
+        self.active_connections.append(websocket)
+
+    def disconnect(self, websocket: WebSocket):
+
+        if websocket in self.active_connections:
+
+            self.active_connections.remove(websocket)
+
+    async def broadcast(self, data: dict):
+
+        disconnected = []
+
+        for connection in self.active_connections:
+
+            try:
+
+                await connection.send_json(data)
+
+            except Exception:
+
+                disconnected.append(connection)
+
+        for connection in disconnected:
+
+            self.disconnect(connection)
+
+
+manager = ConnectionManager()
+
+
+@router.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+
+    await manager.connect(websocket)
+
+    try:
+
+        while True:
+
+            simulation.tick()
+
+            await manager.broadcast(
+                simulation.state()
+            )
+
+            await asyncio.sleep(
+                settings.WS_UPDATE_INTERVAL
+            )
+
+    except WebSocketDisconnect:
+
+        manager.disconnect(websocket)

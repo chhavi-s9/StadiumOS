@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>StadiumOS AI</title>
+
+<style>
+body{
+background:#111827;
+color:white;
+font-family:Arial;
+padding:30px;
+}
+
+button{
+padding:12px;
+margin:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+pre{
+background:#1f2937;
+padding:15px;
+border-radius:10px;
+overflow:auto;
+white-space:pre-wrap;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>🏟 StadiumOS AI Dashboard</h1>
+
+<button onclick="state()">State</button>
+<button onclick="incidents()">Incidents</button>
+<button onclick="predictions()">Predictions</button>
+<button onclick="summary()">Summary</button>
+<button onclick="analysis()">Zone Analysis</button>
+
+<pre id="output">Ready...</pre>
+
+<script>
+
+const api="/api";
+
+async function call(endpoint){
+
+document.getElementById("output").textContent="Loading...";
+
+try{
+
+const r=await fetch(api+endpoint);
+
+const j=await r.json();
+
+document.getElementById("output").textContent=
+JSON.stringify(j,null,2);
+
+}catch(e){
+
+document.getElementById("output").textContent=e;
+
+}
+
+}
+
+function state(){
+call("/state");
+}
+
+function incidents(){
+call("/incidents");
+}
+
+function predictions(){
+call("/predictions");
+}
+
+function summary(){
+call("/summary");
+}
+
+function analysis(){
+call("/zones/Z1/analysis");
+}
+
+state();
+
+</script>
+
+</body>
+</html>
